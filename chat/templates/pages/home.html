@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container">
+    <div class="row margin-top-20">
+        <div class="col-md-9 border-right">
+            <h3>AATalk</h3>
+            {% if request.user.is_superuser %}
+                <button id="btn-toggle-create-room" class="btn btn-primary">Create room chat</button>
+                <div class="row margin-top-20">
+                    <div class="col-md-6 form-create-room">
+                    <textarea class="form-control margin-bot-10 txt-room-name"
+                              placeholder="Enter name of the room...">
+                    </textarea>
+                        <button class="btn btn-success display-at-right btn-create-room"
+                                data-ajax-target="{% url 'create_room_chat' %}">Create room
+                        </button>
+                    </div>
+                </div>
+                <div class="row margin-top-20 contains-list-room">
+                    {% for room in chat_rooms %}
+                        <div class="col-md-4 margin-bot-10 each-room border-left border-bottom border-top">
+                            <a href="{% url 'show_room_chat' room.id %}" class="link-to-each-room">
+                                <p class="name-of-room-p">{{ room.name }}</p>
+                                <p class="time_created_of_room-p">{{ room.time_created }}</p>
+                                <p class="created_by_p">Created by {{ room.created_by.username }}</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="row margin-top-20 contains-list-room">
+                    {% for room in chat_rooms %}
+                        <div class="col-md-4 margin-bot-10 each-room border-left border-bottom border-top">
+                            <a href="{% url 'show_room_chat' room.id %}" class="link-to-each-room">
+                                <p class="name-of-room-p">{{ room.name }}</p>
+                                <p class="time_created_of_room-p">200 users online</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+        </div>
+        <div class="col-md-3">
+            {% if request.user.is_superuser %}
+                <p>Hello Admin, {{ request.user.username }} | <a href="{% url 'logout' %}">Sign out</a></p>
+            {% else %}
+                <p>Hello {{ request.user.username }} | <a href="{% url 'logout' %}">Sign out</a></p>
+            {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'jquery/jquery.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/custom.js' %}" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load  staticfiles %}
+    <meta charset="UTF-8">
+    <title>{{ room_chat.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+
+</head>
+<body>
+
+<div class="container">
+    <div class="row margin-top-20">
+        <div class="col-md-9 border-right">
+            <h3>{{ room_chat.name }}</h3>
+            <div class="row">
+                <div class="col-md-11 border rounded">
+                    <div class="row div-contains-room-chat-reply">
+                        <div class="col-md-12">
+                            {% for chat_reply in chat_replies %}
+                                <div class="row each-reply">
+                                {% if chat_reply.user.username == request.user.username %}
+                                    <b style="color: plum;">Me</b>  : {{ chat_reply.reply_message }}
+                                    {% else %}
+                                    <b style="color: #5b80b2;">{{ chat_reply.user.username }}</b>  : {{ chat_reply.reply_message }}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row margin-top-20 contains-form-send">
+                <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="What's on your mind ?" id="txt-reply">
+                </div>
+                <div class="col-md-2">
+                     <button class="btn btn-primary form-control"
+                             id="btn-send-reply" data-id-room="{{ room_chat.id }}" data-id-user="{{ request.user.id }}">Send</button>
+                </div>
+                {% csrf_token %}
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            {% if request.user.is_superuser %}
+                <h6>Hello Admin, {{ user.username }}  |
+                    <a href="javascript:void(0);" id="btn-exit-room" data-id-room="{{ room_chat.id }}" data-ajax-target="{% url 'exit_room_chat' %}">Exit room</a></h6>
+            {% else %}
+                <h6>Hello {{ user.username }} |
+                    <a href="javascript:void(0);" id="btn-exit-room" data-id-room="{{ room_chat.id }}" data-ajax-target="{% url 'exit_room_chat' %}">Exit room</a></h6>
+            {% endif %}
+
+            <h5>Online now</h5>
+        {% for logged_room in logged_in_room_users %}
+            <a href="{% url 'show_personal_page' logged_room.user.username %}">{{ logged_room.user.username }}</a>
+            <br>
+        {% endfor %}
+        </div>
+    </div>
+
+
+</div>
+<input type="text" value="{{ request.user.username }}" hidden="hidden" id="text-username">
+
+<script src="{% static 'jquery/jquery.min.js' %}" type="text/javascript"></script>
+<script src="http://localhost:4000/socket.io/socket.io.js"></script>
+<script src="{% static 'js/custom.js' %}" type="text/javascript"></script>
+
+</body>
+</html>

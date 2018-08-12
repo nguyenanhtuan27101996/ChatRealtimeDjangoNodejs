@@ -1,0 +1,70 @@
+body{
+    min-height: 700px;
+}
+.margin-top-20{
+    margin-top: 20px;
+}
+.margin-bot-10{
+    margin-bottom: 10px;
+}
+.display-at-right{
+    float: right;
+}
+.form-create-room{
+    display: none;
+}
+.contains-list-room{
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.each-room{
+    padding-top: 5px;
+}
+.each-room:hover {
+    opacity: 0.7;
+    -webkit-transform: scale(1.03);
+    -ms-transform: scale(1.03);
+    transform: scale(1.03);
+    cursor: pointer;
+}
+.name-of-room-p{
+    font-weight: bold;
+    font-size: 17px;
+}
+.time_created_of_room-p{
+    font-size: 14px;
+}
+.created_by_p{
+    font-size: 14px;
+    color: #979BA1;
+}
+.link-to-each-room{
+    text-decoration: none;
+    color: black;
+}
+.link-to-each-room:hover{
+    text-decoration: none;
+}
+.div-contains-room-chat-reply{
+    max-height: 500px;
+    min-height: 400px;
+    overflow-y: auto;
+    background: #f1f1f1;
+}
+.each-reply{
+    padding-top: 5px;
+    padding-left: 10px;
+}
+.circle-avatar{
+    border-radius: 50%;
+}
+.div-contains-conversation-reply{
+    max-height: 500px;
+    min-height: 330px;
+    overflow-y: auto;
+    background: #f1f1f1;
+}
+.conversation-chat-box{
+    display: none;
+}
