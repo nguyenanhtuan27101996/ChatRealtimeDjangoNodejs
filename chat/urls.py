@@ -13,4 +13,5 @@ urlpatterns = [
     path('ajax/exit_room_chat', views.exit_room_chat, name='exit_room_chat'),
     path('ajax/create_reply_of_room_chat/', views.create_reply_of_room_chat, name='create_reply_of_room_chat'),
     path('<str:username>/', views.show_personal_page, name='show_personal_page'),
+    path('ajax/create_conversation_reply/', views.create_conversation_reply, name='create_conversation_reply'),
 ]

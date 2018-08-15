@@ -52,7 +52,6 @@ $("document").ready(function () {
     console.log(socket);
     socket.on('connect', function () {
         socket.on('message', function (message) {
-            //var data = message.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
             var currentUsername = $("#text-username").val();
             var data = message.split(" ");
             var reply = "";
@@ -68,7 +67,6 @@ $("document").ready(function () {
             htmlElement += "</div>";
             $(".div-contains-room-chat-reply>div").append(htmlElement);
         })
-
 
         $("#btn-send-reply").click(function () {
             var msg = $(this).closest(".contains-form-send").find("#txt-reply").val();

@@ -20,10 +20,11 @@
                         <div class="col-md-12">
                             {% for chat_reply in chat_replies %}
                                 <div class="row each-reply">
-                                {% if chat_reply.user.username == request.user.username %}
-                                    <b style="color: plum;">Me</b>  : {{ chat_reply.reply_message }}
+                                    {% if chat_reply.user.username == request.user.username %}
+                                        <b style="color: plum;">Me</b>  : {{ chat_reply.reply_message }}
                                     {% else %}
-                                    <b style="color: #5b80b2;">{{ chat_reply.user.username }}</b>  : {{ chat_reply.reply_message }}
+                                        <b style="color: #5b80b2;">{{ chat_reply.user.username }}</b>  :
+                                        {{ chat_reply.reply_message }}
                                     {% endif %}
                                 </div>
                             {% endfor %}

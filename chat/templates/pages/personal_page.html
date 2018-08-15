@@ -8,53 +8,64 @@
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
 </head>
 <body>
-    <div class="container">
-        <div class="row margin-top-20">
-            <div class="col-md-3">
-                <img src="{% static 'images/empty-avatar.jpg' %}" class="circle-avatar" width="200px">
-            </div>
-            <div class="col-md-3">
-                <p><h3>{{ user.username }}</h3></p>
-                <p><b>{{ user.first_name }} {{ user.last_name }}</b></p>
-                <div class="row">
-                    &nbsp;&nbsp;&nbsp;<button class="btn btn-outline-success" id="btn-add-friend">Kết bạn</button>&nbsp;&nbsp;
-                    <button class="btn btn-outline-dark" id="btn-open-message">Nhắn tin</button>
-                </div>
+<div class="container">
+    <div class="row margin-top-20">
+        <div class="col-md-3">
+            <img src="{% static 'images/empty-avatar.jpg' %}" class="circle-avatar" width="200px">
+        </div>
+        <div class="col-md-3">
+            <p>
+            <h3>{{ user.username }}</h3></p>
+            <p><b>{{ user.first_name }} {{ user.last_name }}</b></p>
+            <div class="row">
+                &nbsp;&nbsp;&nbsp;<button class="btn btn-outline-success" id="btn-add-friend">Kết bạn</button>&nbsp;&nbsp;
+                <button class="btn btn-outline-dark" id="btn-open-message">Nhắn tin</button>
             </div>
         </div>
-        <hr>
-        <div class="row margin-top-20">
-            <div class="col-md-8">
-                <h1>Some thing about this user</h1>
-            </div>
-            <div class="conversation-chat-box col-md-4">
-                <div class="row">
-                    <div class="col-md-12 border rounded">
-                        <div class="row div-contains-conversation-reply">
-                            <div class="col-md-12">
-
-                            </div>
+    </div>
+    <hr>
+    <div class="row margin-top-20">
+        <div class="col-md-8">
+            <h1>Some thing about this user</h1>
+        </div>
+        <div class="conversation-chat-box col-md-4">
+            <div class="row">
+                <div class="col-md-12 border rounded">
+                    <div class="row div-contains-conversation-reply">
+                        <div class="col-md-12">
+                            {% for obj in result_list %}
+                                <div class="row each-reply">
+                                    {% if request.user.id == obj.user.id %}
+                                        <b style="color: plum;">Me</b>  : {{ obj.reply_message }}
+                                    {% else %}
+                                        <b style="color: #5b80b2;">{{ obj.user.username }}</b>  :
+                                        {{ obj.reply_message }}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
-                <div class="row margin-top-20 contains-form-send">
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" placeholder="What's on your mind ?" id="txt-reply">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-primary form-control"
-                                id="btn-send-reply">Send
-                        </button>
-                    </div>
-                    {% csrf_token %}
+            </div>
+            <div class="row margin-top-20 contains-form-send">
+                <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="What's on your mind ?" id="txt-reply">
                 </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary form-control"
+                            id="btn-send-reply" data-request-user="{{ request.user.id }}"
+                    data-page-user="{{ user.id }}">Send
+                    </button>
+                </div>
+                {% csrf_token %}
             </div>
         </div>
-
-
     </div>
+</div>
+<input type="text" value="{{ request.user.username }}" hidden="hidden" id="text-username">
 
 <script src="{% static 'jquery/jquery.min.js' %}" type="text/javascript"></script>
+<script src="http://localhost:4001/socket.io/socket.io.js"></script>
 <script src="{% static 'js/custom_conversation_chat.js' %}" type="text/javascript"></script>
 </body>
 </html>

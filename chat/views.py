@@ -4,9 +4,12 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
-from .models import RoomChat, LoggedInRoom, RoomChatReply
+from .models import RoomChat, LoggedInRoom, RoomChatReply, Conversation, ConversationReply
 from django.http import JsonResponse
 import  redis
+from itertools import chain
+from operator import attrgetter
+
 
 def show_index_page(request):
     return render(request, 'pages/index.html')
@@ -79,16 +82,52 @@ def create_reply_of_room_chat(request):
     }
 
     r = redis.StrictRedis(host='localhost', port=6379, db=0)
-    #r.publish('chat', user.username + ' : ' +request.POST.get('reply', False))
     r.publish('chat', user.username+" "+request.POST.get('reply', False))
+    return JsonResponse(data)
+
+
+@csrf_exempt
+def create_conversation_reply(request):
+    request_user_id = request.POST.get("request_user_id", False)
+    page_user_id = request.POST.get("page_user_id", False)
+    reply = request.POST.get("reply", False)
+
+    request_user = User.objects.get(id=request_user_id)
+    page_user = User.objects.get(id=page_user_id)
+
+    if Conversation.objects.all().filter(user1=request_user, user2=page_user).exists():
+        conversation = Conversation.objects.all().filter(user1=request_user, user2=page_user).first()
+        conversation_reply = ConversationReply(user=request_user, conversation=conversation, reply_message=reply)
+        conversation_reply.save()
+    else:
+        conversation = Conversation(user1=request_user, user2=page_user)
+        conversation.save()
+
+        conversation_reply = ConversationReply(user=request_user, conversation=conversation, reply_message=reply)
+        conversation_reply.save()
+
+    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r.publish('conversation_chat', request_user.username + " " + reply)
+
+    data ={
+        'is_valid': 'Success',
+    }
     return JsonResponse(data)
 
 
 @login_required(login_url='/accounts/login/')
 def show_personal_page(request, username):
     user = User.objects.get(username=username)
+    conversation1 = Conversation.objects.all().filter(user1=user, user2=request.user).first()
+    conversation2 = Conversation.objects.all().filter(user1=request.user, user2=user).first()
 
-    return render(request, 'pages/personal_page.html', {'user': user})
+    conversation_replies1 = ConversationReply.objects.all().filter(conversation=conversation1)[0:100]
+    conversation_replies2 = ConversationReply.objects.all().filter(conversation=conversation2)[0:100]
+
+    result_list = sorted(chain(conversation_replies1, conversation_replies2), key=attrgetter('time_send'))
+
+    return render(request, 'pages/personal_page.html', {'user': user,
+                                                        'result_list': result_list})
 
 
 def signup_account(request):

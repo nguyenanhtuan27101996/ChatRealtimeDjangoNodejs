@@ -1,14 +1,13 @@
 var http = require('http');
-var server = http.createServer().listen(4000);
+var server = http.createServer().listen(4001);
 var io = require('socket.io').listen(server);
 var cookie_reader = require('cookie');
 var querystring = require('querystring');
 var redis = require('redis');
-var sub = redis.createClient();
+var sub1 = redis.createClient();
 
 //Subscribe to the Redis chat channel
-sub.subscribe('chat');
-
+sub1.subscribe('conversation_chat');
 
 io.set('authorization', function (data, accept) {
     if (data.headers.cookie) {
@@ -19,29 +18,25 @@ io.set('authorization', function (data, accept) {
 });
 io.set('log level', 1);
 
-
 io.sockets.on('connection', function(socket){
 
-    sub.on('message', function(channel, message){
+	sub1.on('message', function(channel, message){
         socket.send(message);
 
     });
-
-	socket.on('send_reply', function(data){
+	socket.on('send_conversation_reply', function(data){
 	    var dataNeedSend = {
-            user_id: data.idUser,
-            id: data.idRoom,
+            request_user_id: data.requestUserId,
+            page_user_id: data.pageUserId,
             reply: data.new_msg,
         }
 	    var values = querystring.stringify(dataNeedSend);
-        console.log(values);
-        console.log(dataNeedSend);
 
-		console.log(data.new_msg + " - "+ data.idRoom + " - " + data.idUser);
+
 		var options = {
 			hostname: 'localhost',
 			port: '8000',
-			path: '/ajax/create_reply_of_room_chat/',
+			path: '/ajax/create_conversation_reply/',
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
@@ -63,7 +58,4 @@ io.sockets.on('connection', function(socket){
         req.write(values);
         req.end();
 	});
-
-
-
 });

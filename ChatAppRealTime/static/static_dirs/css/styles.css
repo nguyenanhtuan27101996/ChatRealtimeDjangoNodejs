@@ -60,7 +60,7 @@ body{
     border-radius: 50%;
 }
 .div-contains-conversation-reply{
-    max-height: 500px;
+    max-height: 340px;
     min-height: 330px;
     overflow-y: auto;
     background: #f1f1f1;
