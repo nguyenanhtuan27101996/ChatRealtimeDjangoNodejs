@@ -17,6 +17,7 @@ pip install django-redis
 -install redis-server
 
 on linux : sudo apt-get install redis-server
+
 on windows : https://github.com/rgl/redis/downloads
 
 -install nodejs
